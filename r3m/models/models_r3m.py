@@ -62,13 +62,13 @@ class R3M(nn.Module):
         self.convnet.fc = Identity()
         self.convnet.train()
         params += list(self.convnet.parameters())
-        
+
         ## Language Reward
         if self.langweight > 0.0:
             ## Pretrained DistilBERT Sentence Encoder
             from r3m.models.models_language import LangEncoder, LanguageReward
-            self.lang_enc = LangEncoder(self.device, 0, 0) 
-            self.lang_rew = LanguageReward(None, self.outdim, hidden_dim, self.lang_enc.lang_size, simfunc=self.sim) 
+            self.lang_enc = LangEncoder(self.device, 0, 0)
+            self.lang_rew = LanguageReward(None, self.outdim, hidden_dim, self.lang_enc.lang_size, simfunc=self.sim)
             params += list(self.lang_rew.parameters())
         ########################################################################
 
@@ -82,16 +82,16 @@ class R3M(nn.Module):
 
     ## Forward Call (im --> representation)
     def forward(self, obs, num_ims = 1, obs_shape = [3, 224, 224]):
-        if obs_shape != [3, 224, 224]:
-            preprocess = nn.Sequential(
-                        transforms.Resize(256),
-                        transforms.CenterCrop(224),
-                        self.normlayer,
-                )
-        else:
-            preprocess = nn.Sequential(
-                        self.normlayer,
-                )
+        # if obs_shape != [3, 224, 224]:
+        #     preprocess = nn.Sequential(
+        #                 transforms.Resize(256),
+        #                 transforms.CenterCrop(224),
+        #                 self.normlayer,
+        #         )
+        # else:
+        preprocess = nn.Sequential(
+                    self.normlayer,
+            )
 
         ## Input must be [0, 255], [3,244,244]
         obs = obs.float() /  255.0

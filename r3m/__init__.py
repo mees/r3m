@@ -13,10 +13,10 @@ import torch
 import copy
 
 VALID_ARGS = ["_target_", "device", "lr", "hidden_dim", "size", "l2weight", "l1weight", "langweight", "tcnweight", "l2dist", "bs"]
-if torch.cuda.is_available():
-    device = "cuda"
-else:
-    device = "cpu"
+# if torch.cuda.is_available():
+#     device = "cuda"
+# else:
+#     device = "cpu"
 
 def cleanup_config(cfg):
     config = copy.deepcopy(cfg)
@@ -25,7 +25,7 @@ def cleanup_config(cfg):
         if key not in VALID_ARGS:
             del config.agent[key]
     config.agent["_target_"] = "r3m.R3M"
-    config["device"] = device
+    # config["device"] = device
     
     ## Hardcodes to remove the language head
     ## Assumes downstream use is as visual representation
@@ -34,6 +34,7 @@ def cleanup_config(cfg):
 
 def remove_language_head(state_dict):
     keys = state_dict.keys()
+
     ## Hardcodes to remove the language head
     ## Assumes downstream use is as visual representation
     for key in list(keys):
@@ -41,7 +42,7 @@ def remove_language_head(state_dict):
             del state_dict[key]
     return state_dict
 
-def load_r3m(modelid):
+def load_r3m(modelid, device):
     home = os.path.join(expanduser("~"), ".r3m")
     if modelid == "resnet50":
         foldername = "r3m_50"
