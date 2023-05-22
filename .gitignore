@@ -1,3 +1,4 @@
 outputs/
 __pycache__/
 .nfs*
+r3m.egg-info/
